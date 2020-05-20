@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Generate Typescript Types out of JSON</title>
+
+    <link rel="stylesheet" href="./paper.min.css" />
+
+    <style>
+      .m-top_lg {
+        margin-top: 4em;
+      }
+
+      .height-fill {
+        height: calc(100vh - 150px);
+      }
+
+      .height-100 {
+        height: 100%;
+      }
+
+      .scrollable {
+        overflow: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="border fixed">
+      <div class="nav-brand">
+        <h4><a href="./index.html">JSON to Types</a></h4>
+      </div>
+      <div class="collapsible">
+        <input id="collapsible2" type="checkbox" name="collapsible2" />
+        <button>
+          <label for="collapsible2">
+            <div class="bar1"></div>
+            <div class="bar2"></div>
+            <div class="bar3"></div>
+          </label>
+        </button>
+        <div class="collapsible-body">
+          <ul class="inline">
+            <li><a href="./about.html">About</a></li>
+            <li><a href="https://github.com/dcefram/json-to-types">Github</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="card m-top_lg margin-large padding-large">
+      <div>
+        <p>This tool generates typescript types from a JSON object.</p>
+
+        <p>I made this tool as there are times a backend API endpoint's response is not documented.
+        It's easy to manually do it on small responses, but there were multiple endpoints that 
+        returned a huge payload... which is what cuased me to make this script :D</p>
+
+        <p>Btw, this is just plain HTML with a pint of JS. The styles are from <a href="https://www.getpapercss.com" target="_blank" rel="noopener noreferrer" title="PaperCSS">PaperCSS.</a></p>
+      </div>
+    </div>
+  </body>
+</html>

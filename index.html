@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Generate Typescript Types out of JSON</title>
+
+    <link rel="stylesheet" href="./paper.min.css" />
+
+    <style>
+      .m-top_lg {
+        margin-top: 3em;
+      }
+
+      .height-fill {
+        height: calc(100vh - 150px);
+      }
+
+      .height-100 {
+        height: 100%;
+      }
+
+      .scrollable {
+        overflow: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="border fixed">
+      <div class="nav-brand">
+        <h4><a href="./index.html">JSON to Types</a></h4>
+      </div>
+      <div class="collapsible">
+        <input id="collapsible2" type="checkbox" name="collapsible2" />
+        <button>
+          <label for="collapsible2">
+            <div class="bar1"></div>
+            <div class="bar2"></div>
+            <div class="bar3"></div>
+          </label>
+        </button>
+        <div class="collapsible-body">
+          <ul class="inline">
+            <li><a href="./about.html">About</a></li>
+            <li><a href="https://github.com/dcefram/json-to-types">Github</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="row flex-spaces child-borders m-top_lg">
+      <div class="card col-fill form-group margin">
+        <textarea class="height-fill" id="input"></textarea>
+      </div>
+
+      <button id="generate">Generate</button>
+
+      <div class="card col-fill form-group margin padding scrollable">
+        <pre class="height-100"><code id="output"></code></pre>
+      </div>
+    </div>
+
+    <script>
+      let hasObject = false;
+
+      function generateTypes(obj, name) {
+        const objects = [];
+        const parsed = Object.keys(obj).reduce((str, key) => {
+          let type = Array.isArray(obj[key]) ? typeof obj[key][0] : typeof obj[key];
+
+          if (type === 'object') {
+            hasObject = true;
+            type = key.charAt(0).toUpperCase() + key.slice(1, key.length);
+            objects.push({ obj: obj[key], type});
+          }
+
+          type = type === 'undefined' ? 'any' : type;
+          type = Array.isArray(obj[key]) ? type + '[]' : type;
+
+          return `${str}\n  ${key}: ${type};`;
+        }, '');
+
+        let subTypes = '';
+
+        objects.forEach((item) => {
+          subTypes += generateTypes(item.obj, item.type) + '\n\n';
+        });
+
+        return `${subTypes}type ${name} = {${parsed}\n}`;
+      }
+
+      const input = document.getElementById('input');
+      const output = document.getElementById('output');
+      const generate = document.getElementById('generate');
+
+      generate.addEventListener('click', () => {
+        hasObject = false;
+
+        try {
+          const json = JSON.parse(input.value);
+          const generated = generateTypes(json, 'Kita');
+
+          output.textContent = generated;
+        } catch (error) { 
+          console.error(`Hey, something went wrong: ${error.message}`)
+        }
+      });
+    </script>
+  </body>
+</html>

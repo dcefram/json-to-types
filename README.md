@@ -1,0 +1,1 @@
+Uhmm... [Generate typescript types from JSON](https://daeram.com/sides/json-to-types)
