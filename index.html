@@ -21,6 +21,23 @@
       .scrollable {
         overflow: auto;
       }
+
+      .absolute {
+        position: absolute;
+        right: 1em;
+        left: 1em;
+        box-sizing: border-box;
+        transition: opacity 0.3s ease;
+        opacity: 0;
+      }
+
+      .z-100 {
+        z-index: 100;
+      }
+
+      .visible {
+        opacity: 1;
+      }
     </style>
   </head>
   <body>
@@ -46,7 +63,12 @@
       </div>
     </nav>
 
+    <div class="absolute z-100 margin" id="alert">
+      <div class="alert alert-danger">Alert-danger</div>
+    </div>
+
     <div class="row flex-spaces child-borders m-top_lg">
+
       <div class="card col-fill form-group margin">
         <textarea class="height-fill" id="input"></textarea>
       </div>
@@ -60,16 +82,33 @@
 
     <script>
       let hasObject = false;
+      const input = document.getElementById('input');
+      const output = document.getElementById('output');
+      const generate = document.getElementById('generate');
+      const alertBox = document.getElementById('alert');
+
+      let alertTimeout = null;
+      function showAlert(message = '') {
+        alertBox.querySelector('.alert').textContent = message;
+        alertBox.classList.add('visible');
+        clearTimeout(alertTimeout);
+
+        alertTimeout = setTimeout(() => {
+          alertBox.classList.remove('visible');
+        }, 4000);
+      }
 
       function generateTypes(obj, name) {
         const objects = [];
         const parsed = Object.keys(obj).reduce((str, key) => {
           let type = Array.isArray(obj[key]) ? typeof obj[key][0] : typeof obj[key];
 
-          if (type === 'object') {
+          if (type === 'object' && obj[key] !== null) {
             hasObject = true;
             type = key.charAt(0).toUpperCase() + key.slice(1, key.length);
             objects.push({ obj: obj[key], type});
+          } else if (obj[key] === null) {
+            type = 'null';
           }
 
           type = type === 'undefined' ? 'any' : type;
@@ -81,15 +120,11 @@
         let subTypes = '';
 
         objects.forEach((item) => {
-          subTypes += generateTypes(item.obj, item.type) + '\n\n';
+          subTypes += generateTypes(Array.isArray(item.obj) ? item.obj[0] : item.obj, item.type) + '\n\n';
         });
 
         return `${subTypes}type ${name} = {${parsed}\n}`;
       }
-
-      const input = document.getElementById('input');
-      const output = document.getElementById('output');
-      const generate = document.getElementById('generate');
 
       generate.addEventListener('click', () => {
         hasObject = false;
@@ -100,7 +135,7 @@
 
           output.textContent = generated;
         } catch (error) { 
-          console.error(`Hey, something went wrong: ${error.message}`)
+          showAlert(`Hey, something went wrong: ${error.message}`);
         }
       });
     </script>
